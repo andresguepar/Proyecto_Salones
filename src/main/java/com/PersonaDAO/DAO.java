@@ -6,6 +6,7 @@ import Model.Persona;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -82,15 +83,15 @@ public class DAO {
         }
     }
 
-   public List<Persona> list(){
+   public List<Persona> list()  {
 
         List<Persona> personaList = new ArrayList<>();
 
         try {
 
             String SQL = "SELECT * FROM horarios.salones";
-
             Connection connection = this.factoryConexion.getConnection();
+
             PreparedStatement sentence = connection.prepareStatement(SQL);
             ResultSet data = sentence.executeQuery();
             while(data.next()){
@@ -122,5 +123,27 @@ public class DAO {
         }
 
         return personaList;
+    }
+
+    public boolean delete(int id){
+
+        try {
+            String SQL = "DELETE FROM salones WHERE id = ?";
+
+            Connection connection = this.factoryConexion.getConnection();
+            PreparedStatement sentence = connection.prepareStatement(SQL);
+            sentence.setInt(1,id);
+            sentence.executeUpdate();
+            sentence.close();
+            return true;
+
+        }catch (Exception e){
+            System.err.println("Error not Delete :(");
+            System.err.println("Message Error:"+ e.getMessage());
+            System.err.println("Detail:");
+            e.printStackTrace();
+            return false;
+
+        }
     }
 }
